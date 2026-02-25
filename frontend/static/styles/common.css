@@ -1,0 +1,32 @@
+/* 全局样式 */
+* {
+	box-sizing: border-box;
+}
+
+page {
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+/* 清除按钮默认样式 */
+button {
+	padding: 0;
+	margin: 0;
+	line-height: normal;
+}
+
+button::after {
+	border: none;
+}
+
+/* 输入框样式 */
+input, textarea {
+	box-sizing: border-box;
+}
+
+/* 图片样式 */
+image {
+	display: block;
+}
+
