@@ -20,3 +20,13 @@ export const updateProfile = (data) => {
 	return request.put('/api/auth/profile', data)
 }
 
+// 修改密码
+export const changePassword = (data) => {
+	return request.post('/api/auth/change-password', data)
+}
+
+// 上传头像
+export const uploadAvatar = (file) => {
+	return request.upload('/api/auth/avatar', file)
+}
+

@@ -25,9 +25,20 @@
 				@click="navigateTo('/pages/projects/detail?id=' + project.id)"
 			>
 				<view class="card-header">
-					<text class="project-name">{{ project.name }}</text>
-					<view class="status-badge" :class="'status-' + project.status">
-						{{ project.status }}
+					<view class="header-left">
+						<image class="creator-avatar" :src="getAvatarUrl(project.owner?.avatar)" mode="aspectFill"></image>
+						<view class="header-info">
+							<text class="project-name">{{ project.name }}</text>
+							<text class="creator-name">创建者: {{ project.owner?.username || '未知' }}</text>
+						</view>
+					</view>
+					<view class="badges">
+						<view class="status-badge" :class="'status-' + project.status">
+							{{ project.status }}
+						</view>
+						<view class="approval-badge" :class="'approval-' + project.approval_status" v-if="project.approval_status">
+							{{ getApprovalText(project.approval_status) }}
+						</view>
 					</view>
 				</view>
 				
@@ -66,6 +77,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { getProjects } from '@/api/project.js'
+import config from '@/config.js'
 
 const statusTabs = [
 	{ label: '全部', value: '' },
@@ -103,6 +115,27 @@ const formatTime = (time) => {
 	if (!time) return ''
 	const date = new Date(time)
 	return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+}
+
+const getApprovalText = (status) => {
+	const map = {
+		'pending': '待审批',
+		'approved': '已批准',
+		'rejected': '已拒绝'
+	}
+	return map[status] || status
+}
+
+const getAvatarUrl = (avatar) => {
+	if (!avatar) {
+		return '/static/default-avatar.png'
+	}
+	// 如果已经是完整URL，直接返回
+	if (avatar.startsWith('http')) {
+		return avatar
+	}
+	// 如果是相对路径，加上baseURL
+	return `${config.baseURL}${avatar}`
 }
 
 onMounted(() => {
@@ -191,16 +224,49 @@ onMounted(() => {
 	margin-bottom: 20rpx;
 }
 
+.header-left {
+	display: flex;
+	align-items: center;
+	flex: 1;
+	gap: 20rpx;
+}
+
+.creator-avatar {
+	width: 80rpx;
+	height: 80rpx;
+	border-radius: 40rpx;
+	border: 2rpx solid #f0f0f0;
+}
+
+.header-info {
+	display: flex;
+	flex-direction: column;
+	gap: 8rpx;
+	flex: 1;
+}
+
 .project-name {
 	font-size: 32rpx;
 	font-weight: bold;
 	color: #333333;
 }
 
-.status-badge {
+.creator-name {
+	font-size: 24rpx;
+	color: #999999;
+}
+
+.badges {
+	display: flex;
+	gap: 10rpx;
+	flex-shrink: 0;
+}
+
+.status-badge, .approval-badge {
 	padding: 8rpx 16rpx;
 	border-radius: 8rpx;
 	font-size: 22rpx;
+	white-space: nowrap;
 }
 
 .status-进行中 {
@@ -216,6 +282,21 @@ onMounted(() => {
 .status-暂停 {
 	background: #FFF3E0;
 	color: #FF9800;
+}
+
+.approval-pending {
+	background: #FFF3E0;
+	color: #FF9800;
+}
+
+.approval-approved {
+	background: #E8F5E9;
+	color: #4CAF50;
+}
+
+.approval-rejected {
+	background: #FFEBEE;
+	color: #F44336;
 }
 
 .project-info {

@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 import os
 from database import engine, Base
 from config import settings
-from routers import auth, projects, inspirations, tasks, materials
+from routers import auth, projects, inspirations, tasks, materials, contracts, permissions, inspiration_import, project_import, ai_image, oauth, ai_oauth, project_documents, documents
 
 # 创建数据库表
 Base.metadata.create_all(bind=engine)
@@ -41,6 +41,15 @@ app.include_router(inspirations.router)
 app.include_router(tasks.router)
 app.include_router(materials.router)
 app.include_router(materials.supplier_router)
+app.include_router(contracts.router)
+app.include_router(permissions.router)
+app.include_router(inspiration_import.router)
+app.include_router(project_import.router)
+app.include_router(ai_image.router)
+app.include_router(oauth.router)
+app.include_router(ai_oauth.router)
+app.include_router(project_documents.router)
+app.include_router(documents.router)
 
 # 全局异常处理
 @app.exception_handler(Exception)

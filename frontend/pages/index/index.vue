@@ -2,7 +2,7 @@
 	<view class="container">
 		<view class="header">
 			<view class="user-info">
-				<image class="avatar" :src="userInfo.avatar || '/static/default-avatar.png'" mode="aspectFill"></image>
+				<image class="avatar" :src="getAvatarUrl(userInfo.avatar)" mode="aspectFill"></image>
 				<view class="info">
 					<text class="name">{{ userInfo.username || '建筑师' }}</text>
 					<text class="company">{{ userInfo.company || '暂无公司信息' }}</text>
@@ -25,9 +25,43 @@
 			</view>
 		</view>
 		
+		<!-- 灵感轮播 -->
+		<view class="inspiration-carousel">
+			<swiper 
+				class="swiper" 
+				:indicator-dots="true" 
+				:autoplay="true" 
+				:interval="3000" 
+				:duration="500"
+				circular
+			>
+				<swiper-item v-for="inspiration in carouselInspirations" :key="inspiration.id">
+					<view class="carousel-item" @click="viewInspiration(inspiration.id)">
+						<image class="carousel-image" :src="inspiration.image_url" mode="aspectFill"></image>
+						<view class="carousel-info">
+							<text class="carousel-title">{{ inspiration.title }}</text>
+							<text class="carousel-category">{{ inspiration.category }}</text>
+						</view>
+					</view>
+				</swiper-item>
+			</swiper>
+		</view>
+		
 		<view class="quick-actions">
 			<text class="section-title">快速操作</text>
 			<view class="action-grid">
+				<view class="action-item" @click="navigateTo('/pages/ai-image/generate')">
+					<view class="action-icon" style="background: #FF6B6B;">
+						<text class="icon">🎨</text>
+					</view>
+					<text class="action-text">AI生图</text>
+				</view>
+				<view class="action-item" v-if="userInfo.is_root" @click="navigateTo('/pages/contracts/generate')">
+					<view class="action-icon" style="background: #FFA500;">
+						<text class="icon">📄</text>
+					</view>
+					<text class="action-text">生成合同</text>
+				</view>
 				<view class="action-item" @click="navigateTo('/pages/projects/add')">
 					<view class="action-icon" style="background: #667eea;">
 						<text class="icon">+</text>
@@ -45,12 +79,6 @@
 						<text class="icon">📊</text>
 					</view>
 					<text class="action-text">项目管理</text>
-				</view>
-				<view class="action-item" @click="navigateTo('/pages/materials/materials')">
-					<view class="action-icon" style="background: #43e97b;">
-						<text class="icon">🏗️</text>
-					</view>
-					<text class="action-text">材料库</text>
 				</view>
 			</view>
 		</view>
@@ -86,11 +114,13 @@ import { getProfile } from '@/api/auth.js'
 import { getProjects } from '@/api/project.js'
 import { getInspirations } from '@/api/inspiration.js'
 import { getMaterials } from '@/api/material.js'
+import config from '@/config.js'
 
 const userInfo = reactive({
 	username: '',
 	company: '',
-	avatar: ''
+	avatar: '',
+	is_root: false
 })
 
 const stats = reactive({
@@ -100,6 +130,7 @@ const stats = reactive({
 })
 
 const recentProjects = ref([])
+const carouselInspirations = ref([])
 
 const navigateTo = (url) => {
 	if (url.includes('pages/projects/projects') || url.includes('pages/materials/materials')) {
@@ -143,10 +174,38 @@ const loadRecentProjects = async () => {
 	}
 }
 
+const loadCarouselInspirations = async () => {
+	try {
+		const res = await getInspirations({ limit: 5 })
+		carouselInspirations.value = res
+	} catch (error) {
+		console.error('获取轮播灵感失败:', error)
+	}
+}
+
+const viewInspiration = (id) => {
+	uni.navigateTo({
+		url: `/pages/inspirations/detail?id=${id}`
+	})
+}
+
+const getAvatarUrl = (avatar) => {
+	if (!avatar) {
+		return '/static/default-avatar.png'
+	}
+	// 如果已经是完整URL，直接返回
+	if (avatar.startsWith('http')) {
+		return avatar
+	}
+	// 如果是相对路径，加上baseURL
+	return `${config.baseURL}${avatar}`
+}
+
 onMounted(() => {
 	loadUserInfo()
 	loadStats()
 	loadRecentProjects()
+	loadCarouselInspirations()
 })
 </script>
 
@@ -155,6 +214,51 @@ onMounted(() => {
 	min-height: 100vh;
 	background: #F5F7FA;
 	padding-bottom: 20rpx;
+}
+
+.inspiration-carousel {
+	margin: 30rpx;
+	border-radius: 20rpx;
+	overflow: hidden;
+	box-shadow: 0 10rpx 30rpx rgba(0, 0, 0, 0.1);
+}
+
+.swiper {
+	height: 400rpx;
+}
+
+.carousel-item {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+.carousel-image {
+	width: 100%;
+	height: 100%;
+}
+
+.carousel-info {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+	padding: 40rpx 30rpx 30rpx;
+}
+
+.carousel-title {
+	display: block;
+	font-size: 32rpx;
+	font-weight: bold;
+	color: #FFFFFF;
+	margin-bottom: 10rpx;
+}
+
+.carousel-category {
+	display: block;
+	font-size: 24rpx;
+	color: rgba(255, 255, 255, 0.8);
 }
 
 .header {
@@ -241,7 +345,7 @@ onMounted(() => {
 
 .action-grid {
 	display: grid;
-	grid-template-columns: repeat(4, 1fr);
+	grid-template-columns: repeat(5, 1fr);
 	gap: 20rpx;
 }
 

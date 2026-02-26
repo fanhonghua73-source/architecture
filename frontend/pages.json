@@ -66,6 +66,78 @@
 			"style": {
 				"navigationBarTitleText": "我的"
 			}
+		},
+		{
+			"path": "pages/mine/edit",
+			"style": {
+				"navigationBarTitleText": "编辑个人信息"
+			}
+		},
+		{
+			"path": "pages/mine/change-password",
+			"style": {
+				"navigationBarTitleText": "修改密码"
+			}
+		},
+		{
+			"path": "pages/admin/users",
+			"style": {
+				"navigationBarTitleText": "用户管理"
+			}
+		},
+		{
+			"path": "pages/admin/ai-config",
+			"style": {
+				"navigationBarTitleText": "AI配置"
+			}
+		},
+		{
+			"path": "pages/contracts/generate",
+			"style": {
+				"navigationBarTitleText": "生成合同"
+			}
+		},
+		{
+			"path": "pages/admin/inspiration-import",
+			"style": {
+				"navigationBarTitleText": "灵感自动导入"
+			}
+		},
+		{
+			"path": "pages/admin/edit-user",
+			"style": {
+				"navigationBarTitleText": "编辑用户"
+			}
+		},
+		{
+			"path": "pages/ai-image/generate",
+			"style": {
+				"navigationBarTitleText": "AI生图"
+			}
+		},
+		{
+			"path": "pages/admin/oauth-config",
+			"style": {
+				"navigationBarTitleText": "OAuth配置"
+			}
+		},
+		{
+			"path": "pages/admin/ai-oauth-config",
+			"style": {
+				"navigationBarTitleText": "AI厂商OAuth授权"
+			}
+		},
+		{
+			"path": "pages/projects/documents",
+			"style": {
+				"navigationBarTitleText": "项目资料管理"
+			}
+		},
+		{
+			"path": "pages/admin/project-approval",
+			"style": {
+				"navigationBarTitleText": "项目审批"
+			}
 		}
 	],
 	"globalStyle": {

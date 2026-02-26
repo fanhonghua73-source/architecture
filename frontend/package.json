@@ -10,7 +10,7 @@
 		"build:mp-weixin": "uni build -p mp-weixin"
 	},
 	"dependencies": {
-		"@dcloudio/uni-ui": "^1.4.28",
+		"@dcloudio/uni-ui": "^1.5.11",
 		"pinia": "^2.0.36",
 		"vue": "^3.3.4"
 	},
@@ -21,4 +21,3 @@
 		"vite": "^4.3.9"
 	}
 }
-

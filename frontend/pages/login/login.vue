@@ -131,12 +131,28 @@ const handleLogin = async () => {
 	}
 }
 
+// 验证邮箱格式
+const validateEmail = (email) => {
+	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+	return emailRegex.test(email)
+}
+
 // 注册
 const handleRegister = async () => {
 	if (!registerData.username || !registerData.email || !registerData.password) {
 		uni.showToast({
 			title: '请填写完整信息',
 			icon: 'none'
+		})
+		return
+	}
+	
+	// 验证邮箱格式
+	if (!validateEmail(registerData.email)) {
+		uni.showToast({
+			title: '邮箱格式不正确',
+			icon: 'none',
+			duration: 2000
 		})
 		return
 	}
